@@ -1,18 +1,28 @@
+import csv
+
+from helper import get_string_param, get_now_datetime
+
 from flask import Flask, request
 from flask_cors import CORS
-import csv
 
 app = Flask(__name__)
 CORS(app)
 
 
 @app.route('/pm')
-def get_past_pm():  # put application's code here
-    year = request.args.get('year')
-    month = request.args.get('month')
-    day = request.args.get('day')
-    hour = request.args.get('hour')
-    file = open('static/' + year + '.csv')
+def get_pm():
+    now_year, now_month, now_day, now_hour = get_now_datetime()
+
+    year = get_string_param('year', now_year)
+    month = get_string_param('month', now_month)
+    day = get_string_param('day', now_day)
+    hour = get_string_param('hour', now_hour)
+
+    try:
+        file = open('static/' + year + '.csv')
+    except:
+        return "File Not Found", 400
+
     reader = csv.reader(file)
     lines = list(reader)[1:]
     pm = {}
@@ -24,7 +34,18 @@ def get_past_pm():  # put application's code here
             temp = {location: pm10}
             pm[time] = temp
     datetime = year + '-' + month.zfill(2) + '-' + day.zfill(2) + ' ' + hour + ':00'
-    return pm[datetime]
+
+    try:
+        pm_result = pm[datetime]
+    except:
+        return "Wrong Parameter", 400
+
+    result = {'pm_result': pm_result,
+              'year': year,
+              'month': month,
+              'day': day,
+              'hour': hour}
+    return result
 
 
 if __name__ == '__main__':
