@@ -27,4 +27,4 @@ def get_string_param(key, default=None):
 
 def get_now_datetime():
     now = datetime.datetime.now()
-    return now.year, now.month, now.day, now.hour
+    return now.year-1, now.month, now.day, str(now.hour)[:2]

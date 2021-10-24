@@ -17,9 +17,10 @@ def get_pm():
     month = get_string_param('month', now_month)
     day = get_string_param('day', now_day)
     hour = get_string_param('hour', now_hour)
+    print(year, month, day)
 
     try:
-        file = open('static/' + year + '.csv')
+        file = open('static/' + year + '-intg.csv')
     except:
         return "File Not Found", 400
 
@@ -27,7 +28,8 @@ def get_pm():
     lines = list(reader)[1:]
     pm = {}
     for line in lines:
-        location, time, pm10 = line[0], line[1], line[6]
+        location, y, m, d, h, pm10 = line[0], line[1], line[2], line[3], line[4], line[9]
+        time = y + '-' + m.zfill(2) + '-' + d.zfill(2) + ' ' + h + ':00'
         if time in pm:
             pm[time][location] = pm10
         else:
