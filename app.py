@@ -1,11 +1,14 @@
 import csv
 
+from werkzeug.exceptions import BadRequest
+
 from helper import get_string_param, get_now_datetime
 
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
+model = None
 CORS(app)
 
 
@@ -48,6 +51,30 @@ def get_pm():
               'day': day,
               'hour': hour}
     return result
+
+
+def load_model():
+    global model
+    # TODO: define model =
+
+
+@app.route('/predict', methods=["GET"])
+def predict():
+    year = request.args.get('year')
+    month = request.args.get('month')
+    day = request.args.get('day')
+    time = request.args.get('time')
+    if not (year and month and day and time):
+        raise BadRequest
+
+    # TODO: load prediction from model
+
+    return jsonify({
+        'date': year + month + day + time,
+        'result': {
+
+        }
+    })
 
 
 if __name__ == '__main__':
